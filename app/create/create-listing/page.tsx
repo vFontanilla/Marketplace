@@ -239,7 +239,7 @@ export default function CreateListing() {
                   {/* Preview Image Area */}
                   <div className="bg-gray-100 rounded-lg h-64 mb-6 flex items-center justify-center overflow-hidden">
                     {previewUrls.length > 0 ? (
-                      <img
+                      <Image
                         src={previewUrls[0]}
                         alt="Preview"
                         className="w-full h-full object-cover"

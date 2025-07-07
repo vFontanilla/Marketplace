@@ -89,3 +89,20 @@ export async function getListingsByCategory(category: string): Promise<{ data: L
     return { data: null, error }
   }
 }
+
+export async function getListingById(id: string): Promise<{ data: Listing | null, error: any }> {
+  try {
+    const { data, error } = await supabase
+      .from('listings')
+      .select('*')
+      .eq('id', id)
+      .single()
+    
+    if (error) throw error
+    
+    return { data, error: null }
+  } catch (error) {
+    console.error('Error fetching listing by ID:', error)
+    return { data: null, error }
+  }
+}

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card"
 import { getListings } from '@/lib/listings'
 import type { Listing } from '@/lib/supabase'
+import Link from 'next/link'
 
 export function ContentSide() {
   const [listings, setListings] = useState<Listing[]>([])
@@ -102,44 +103,46 @@ export function ContentSide() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mt-5">
           {filteredListings.map((listing) => (
-            <Card key={listing.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-              <CardContent className="p-4">
-                {/* Image */}
-                <div className="w-full h-32 bg-gray-200 rounded-md mb-3 overflow-hidden">
-                  {listing.image_url ? (
-                    <img
-                      src={listing.image_url}
-                      alt={listing.title}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">
-                      No Image
+            <Link key={listing.id} href={`/list-details/${listing.id}`}>
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                <CardContent className="p-4">
+                  {/* Image */}
+                  <div className="w-full h-32 bg-gray-200 rounded-md mb-3 overflow-hidden">
+                    {listing.image_url ? (
+                      <img
+                        src={listing.image_url}
+                        alt={listing.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        No Image
+                      </div>
+                    )}
+                  </div>
+                  
+                  <CardTitle className="text-sm font-medium text-gray-900 mb-2 line-clamp-2">
+                    {listing.title}
+                  </CardTitle>
+                  <CardDescription className="space-y-1">
+                    <div className="text-lg font-semibold text-gray-900">
+                      {formatPrice(listing.price)}
                     </div>
-                  )}
-                </div>
-                
-                <CardTitle className="text-sm font-medium text-gray-900 mb-2 line-clamp-2">
-                  {listing.title}
-                </CardTitle>
-                <CardDescription className="space-y-1">
-                  <div className="text-lg font-semibold text-gray-900">
-                    {formatPrice(listing.price)}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {formatDate(listing.created_at)}
-                  </div>
-                  {listing.location && (
                     <div className="text-sm text-gray-600">
-                      {listing.location}
+                      {formatDate(listing.created_at)}
                     </div>
-                  )}
-                  <div className="text-xs text-gray-500 capitalize">
-                    {listing.category}
-                  </div>
-                </CardDescription>
-              </CardContent>
-            </Card>
+                    {listing.location && (
+                      <div className="text-sm text-gray-600">
+                        {listing.location}
+                      </div>
+                    )}
+                    <div className="text-xs text-gray-500 capitalize">
+                      {listing.category}
+                    </div>
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
       )}

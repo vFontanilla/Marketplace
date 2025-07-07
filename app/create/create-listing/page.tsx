@@ -125,6 +125,8 @@ export default function CreateListing() {
                         src={url}
                         alt={`Preview ${index + 1}`}
                         className="w-full h-20 object-cover rounded border"
+                        width={100}
+                        height={80}
                       />
                     ))}
                   </div>
@@ -243,6 +245,8 @@ export default function CreateListing() {
                         src={previewUrls[0]}
                         alt="Preview"
                         className="w-full h-full object-cover"
+                        width={400}
+                        height={256}
                       />
                     ) : (
                       <div className="text-center">

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Search } from 'lucide-react'
 import { Input } from "@/components/ui/input"
@@ -14,6 +14,7 @@ import {
 import { getListings, getListingsByCategory } from '@/lib/listings'
 import type { Listing } from '@/lib/supabase'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export function ContentSide() {
   const searchParams = useSearchParams()
@@ -22,11 +23,7 @@ export function ContentSide() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
 
-  useEffect(() => {
-    fetchListings()
-  }, [category])
-
-  const fetchListings = async () => {
+  const fetchListings = useCallback(async () => {
     setLoading(true)
     try {
       let result
@@ -47,8 +44,11 @@ export function ContentSide() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [category])
 
+  useEffect(() => {
+    fetchListings()
+  }, [fetchListings])
   const filteredListings = listings.filter(listing =>
     listing.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     listing.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -138,10 +138,12 @@ export function ContentSide() {
                   {/* Image */}
                   <div className="w-full h-32 bg-gray-200 rounded-md mb-3 overflow-hidden">
                     {listing.image_url ? (
-                      <img
+                      <Image
                         src={listing.image_url}
                         alt={listing.title}
                         className="w-full h-full object-cover"
+                        width={200}
+                        height={128}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-400">

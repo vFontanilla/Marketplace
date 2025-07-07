@@ -1,6 +1,11 @@
 import { supabase } from './supabase'
 import type { Listing } from './supabase'
 
+interface ListingError {
+  message: string
+  code?: string
+}
+
 export async function createListing(listingData: {
   title: string
   price: number
@@ -19,7 +24,7 @@ export async function createListing(listingData: {
       const fileExt = file.name.split('.').pop()
       const fileName = `${Date.now()}.${fileExt}`
       
-      const { data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from('listing-images')
         .upload(fileName, file)
       
@@ -56,7 +61,7 @@ export async function createListing(listingData: {
   }
 }
 
-export async function getListings(limit = 20): Promise<{ data: Listing[] | null, error: any }> {
+export async function getListings(limit = 20): Promise<{ data: Listing[] | null, error: ListingError | null }> {
   try {
     const { data, error } = await supabase
       .from('listings')
@@ -73,7 +78,7 @@ export async function getListings(limit = 20): Promise<{ data: Listing[] | null,
   }
 }
 
-export async function getListingsByCategory(category: string): Promise<{ data: Listing[] | null, error: any }> {
+export async function getListingsByCategory(category: string): Promise<{ data: Listing[] | null, error: ListingError | null }> {
   try {
     const { data, error } = await supabase
       .from('listings')
@@ -118,7 +123,7 @@ export async function sendMessage(messageData: {
   }
 }
 
-export async function getListingById(id: string): Promise<{ data: Listing | null, error: any }> {
+export async function getListingById(id: string): Promise<{ data: Listing | null, error: ListingError | null }> {
   try {
     const { data, error } = await supabase
       .from('listings')

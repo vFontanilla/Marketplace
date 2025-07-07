@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { Mail, Bell, CircleUserRound, ArrowLeft } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,16 +10,16 @@ import { Label } from "@/components/ui/label"
 import { getListingById, sendMessage } from '@/lib/listings'
 import type { Listing } from '@/lib/supabase'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function ListingDetails() {
   const params = useParams()
-  const router = useRouter()
   const [listing, setListing] = useState<Listing | null>(null)
   const [loading, setLoading] = useState(true)
   const [sendingMessage, setSendingMessage] = useState(false)
   const [messageData, setMessageData] = useState({
     email: '',
-    message: "I'm interested in your item!"
+    message: "I&apos;m interested in your item!"
   })
 
   useEffect(() => {
@@ -65,7 +65,7 @@ export default function ListingDetails() {
 
       if (success) {
         alert('Message sent successfully! The seller will contact you soon.')
-        setMessageData({ email: '', message: "I'm interested in your item!" })
+        setMessageData({ email: '', message: "I&apos;m interested in your item!" })
       } else {
         throw error
       }
@@ -191,10 +191,12 @@ export default function ListingDetails() {
           <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <div className="aspect-square bg-gray-100 flex items-center justify-center">
               {listing.image_url ? (
-                <img
+                <Image
                   src={listing.image_url}
                   alt={listing.title}
                   className="w-full h-full object-cover"
+                  width={500}
+                  height={500}
                 />
               ) : (
                 <div className="text-center">
@@ -259,7 +261,7 @@ export default function ListingDetails() {
                   </Label>
                   <Textarea
                     id="message"
-                    placeholder="I'm interested in your item!"
+                    placeholder="I&apos;m interested in your item!"
                     value={messageData.message}
                     onChange={(e) => setMessageData(prev => ({ ...prev, message: e.target.value }))}
                     rows={4}

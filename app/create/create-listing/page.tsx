@@ -54,7 +54,7 @@ export default function CreateListing() {
     setIsSubmitting(true)
     
     try {
-      const { data, error } = await createListing({
+      const { error } = await createListing({
         title: formData.title,
         price: parseFloat(formData.price),
         description: formData.description,

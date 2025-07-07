@@ -2,14 +2,24 @@
 
 import { Tag, CircleUserRound } from 'lucide-react'
 import Link from 'next/link'
-import { getListingsByCategory } from '@/lib/listings'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 export function SideMenu() {
-  const handleCategoryClick = async (category: string) => {
-    // This could be used to filter listings by category
-    // For now, we'll just navigate to the home page
-    // In a more complex app, you might want to use URL params or state management
-    console.log('Filter by category:', category)
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const currentCategory = searchParams.get('category')
+
+  const handleCategoryClick = (category: string) => {
+    // If clicking the same category, clear the filter
+    if (currentCategory === category) {
+      router.push('/')
+    } else {
+      router.push(`/?category=${category}`)
+    }
+  }
+
+  const handleAllItemsClick = () => {
+    router.push('/')
   }
 
   return (
@@ -44,26 +54,42 @@ export function SideMenu() {
         <h3 className='text-lg font-bold text-gray-900 mb-4'>Categories</h3>
         <div className="space-y-2">
           <button 
+            onClick={handleAllItemsClick}
+            className={`flex items-center gap-3 py-2 px-4 rounded-md hover:bg-gray-100 transition-colors w-full text-left ${
+              !currentCategory ? 'bg-blue-50 text-blue-600 font-medium' : ''
+            }`}
+          >
+            <span>All Items</span>
+          </button>
+          <button 
             onClick={() => handleCategoryClick('vehicles')}
-            className='flex items-center gap-3 py-2 px-4 rounded-md hover:bg-gray-100 transition-colors w-full text-left'
+            className={`flex items-center gap-3 py-2 px-4 rounded-md hover:bg-gray-100 transition-colors w-full text-left ${
+              currentCategory === 'vehicles' ? 'bg-blue-50 text-blue-600 font-medium' : ''
+            }`}
           >
             <span>Vehicles</span>
           </button>
           <button 
             onClick={() => handleCategoryClick('electronics')}
-            className='flex items-center gap-3 py-2 px-4 rounded-md hover:bg-gray-100 transition-colors w-full text-left'
+            className={`flex items-center gap-3 py-2 px-4 rounded-md hover:bg-gray-100 transition-colors w-full text-left ${
+              currentCategory === 'electronics' ? 'bg-blue-50 text-blue-600 font-medium' : ''
+            }`}
           >
             <span>Electronics</span>
           </button>
           <button 
             onClick={() => handleCategoryClick('apparel')}
-            className='flex items-center gap-3 py-2 px-4 rounded-md hover:bg-gray-100 transition-colors w-full text-left'
+            className={`flex items-center gap-3 py-2 px-4 rounded-md hover:bg-gray-100 transition-colors w-full text-left ${
+              currentCategory === 'apparel' ? 'bg-blue-50 text-blue-600 font-medium' : ''
+            }`}
           >
             <span>Apparel</span>
           </button>
           <button 
             onClick={() => handleCategoryClick('other')}
-            className='flex items-center gap-3 py-2 px-4 rounded-md hover:bg-gray-100 transition-colors w-full text-left'
+            className={`flex items-center gap-3 py-2 px-4 rounded-md hover:bg-gray-100 transition-colors w-full text-left ${
+              currentCategory === 'other' ? 'bg-blue-50 text-blue-600 font-medium' : ''
+            }`}
           >
             <span>Other</span>
           </button>

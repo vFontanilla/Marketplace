@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Search } from 'lucide-react'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -10,22 +11,32 @@ import {
   CardDescription,
   CardTitle,
 } from "@/components/ui/card"
-import { getListings } from '@/lib/listings'
+import { getListings, getListingsByCategory } from '@/lib/listings'
 import type { Listing } from '@/lib/supabase'
 import Link from 'next/link'
 
 export function ContentSide() {
+  const searchParams = useSearchParams()
+  const category = searchParams.get('category')
   const [listings, setListings] = useState<Listing[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     fetchListings()
-  }, [])
+  }, [category])
 
   const fetchListings = async () => {
+    setLoading(true)
     try {
-      const { data, error } = await getListings()
+      let result
+      if (category) {
+        result = await getListingsByCategory(category)
+      } else {
+        result = await getListings()
+      }
+      
+      const { data, error } = result
       if (error) {
         console.error('Error fetching listings:', error)
         return
@@ -41,8 +52,14 @@ export function ContentSide() {
   const filteredListings = listings.filter(listing =>
     listing.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     listing.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    listing.category.toLowerCase().includes(searchTerm.toLowerCase())
+    listing.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    listing.location?.toLowerCase().includes(searchTerm.toLowerCase())
   )
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Search is handled by the filteredListings above
+  }
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -65,10 +82,15 @@ export function ContentSide() {
     return `Listed on ${date.toLocaleDateString()}`
   }
 
+  const getCategoryDisplayName = (cat: string) => {
+    return cat.charAt(0).toUpperCase() + cat.slice(1)
+  }
   if (loading) {
     return (
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Today's Pick</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          {category ? `${getCategoryDisplayName(category)} Items` : "Today's Pick"}
+        </h2>
         <div className="flex justify-center items-center h-64">
           <div className="text-gray-500">Loading listings...</div>
         </div>
@@ -78,26 +100,33 @@ export function ContentSide() {
 
   return (
     <div className="mb-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-4">Today's Pick</h2>
+      <h2 className="text-2xl font-bold text-gray-900 mb-4">
+        {category ? `${getCategoryDisplayName(category)} Items` : "Today's Pick"}
+      </h2>
       <div className="space-y-6">
-        <form className="flex gap-2" onSubmit={(e) => e.preventDefault()}>
+        <form className="flex gap-2" onSubmit={handleSearch}>
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input 
               className="pl-10" 
-              placeholder="Search for a product" 
+              placeholder={category ? `Search in ${getCategoryDisplayName(category)}...` : "Search for a product"} 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Button type="button">Search</Button>
+          <Button type="submit">Search</Button>
         </form>
       </div>
       
       {filteredListings.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-500">
-            {searchTerm ? 'No listings found matching your search.' : 'No listings available yet.'}
+            {searchTerm 
+              ? 'No listings found matching your search.' 
+              : category 
+                ? `No listings found in ${getCategoryDisplayName(category)} category.`
+                : 'No listings available yet.'
+            }
           </p>
         </div>
       ) : (

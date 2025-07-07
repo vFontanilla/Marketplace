@@ -3,6 +3,7 @@ import { Bell } from 'lucide-react';
 import { CircleUserRound } from 'lucide-react';
 import { SideMenu } from '@/components/side-menu';
 import { ContentSide } from '@/components/content-side';
+import { Suspense } from 'react';
 
 export default function Home() {
   return (
@@ -35,10 +36,14 @@ export default function Home() {
         <div className="max-w-7xl mx-auto p-4">
           <div className='flex gap-6'>
             <div className='w-64 flex-shrink-0'>
-              <SideMenu />
+              <Suspense fallback={<div>Loading...</div>}>
+                <SideMenu />
+              </Suspense>
             </div>
             <div className='flex-1'>
-              <ContentSide />
+              <Suspense fallback={<div>Loading...</div>}>
+                <ContentSide />
+              </Suspense>
             </div>
           </div>
         </div>

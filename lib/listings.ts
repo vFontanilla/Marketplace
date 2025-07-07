@@ -90,6 +90,34 @@ export async function getListingsByCategory(category: string): Promise<{ data: L
   }
 }
 
+export async function sendMessage(messageData: {
+  listing_id: string
+  buyer_email: string
+  seller_email: string
+  message: string
+}) {
+  try {
+    // For now, we'll just simulate sending a message
+    // In a real app, you might want to store messages in a database
+    // or send emails through a service like SendGrid or AWS SES
+    
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    // Here you could integrate with:
+    // 1. A messages table in Supabase
+    // 2. An email service
+    // 3. A notification system
+    
+    console.log('Message sent:', messageData)
+    
+    return { success: true, error: null }
+  } catch (error) {
+    console.error('Error sending message:', error)
+    return { success: false, error }
+  }
+}
+
 export async function getListingById(id: string): Promise<{ data: Listing | null, error: any }> {
   try {
     const { data, error } = await supabase

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { getListingById } from '@/lib/listings'
+import { getListingById, sendMessage } from '@/lib/listings'
 import type { Listing } from '@/lib/supabase'
 import Link from 'next/link'
 
@@ -16,6 +16,7 @@ export default function ListingDetails() {
   const router = useRouter()
   const [listing, setListing] = useState<Listing | null>(null)
   const [loading, setLoading] = useState(true)
+  const [sendingMessage, setSendingMessage] = useState(false)
   const [messageData, setMessageData] = useState({
     email: '',
     message: "I'm interested in your item!"
@@ -50,9 +51,30 @@ export default function ListingDetails() {
       return
     }
 
-    // For now, just show an alert. In a real app, you'd send this to your backend
-    alert('Message sent successfully! The seller will contact you soon.')
-    setMessageData({ email: '', message: "I'm interested in your item!" })
+    if (!listing) return
+
+    setSendingMessage(true)
+    
+    try {
+      const { success, error } = await sendMessage({
+        listing_id: listing.id,
+        buyer_email: messageData.email,
+        seller_email: listing.seller_email,
+        message: messageData.message
+      })
+
+      if (success) {
+        alert('Message sent successfully! The seller will contact you soon.')
+        setMessageData({ email: '', message: "I'm interested in your item!" })
+      } else {
+        throw error
+      }
+    } catch (error) {
+      console.error('Error sending message:', error)
+      alert('Failed to send message. Please try again.')
+    } finally {
+      setSendingMessage(false)
+    }
   }
 
   const formatPrice = (price: number) => {
@@ -245,8 +267,12 @@ export default function ListingDetails() {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
-                  Send Message
+                <Button 
+                  type="submit" 
+                  disabled={sendingMessage}
+                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {sendingMessage ? 'Sending...' : 'Send Message'}
                 </Button>
               </form>
             </div>

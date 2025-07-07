@@ -27,8 +27,8 @@ export default function CreateListing() {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
-    if (files.length > 5) {
-      alert('Maximum 5 images allowed')
+    if (files.length > 1) {
+      alert('Maximum 1 images allowed')
       return
     }
     

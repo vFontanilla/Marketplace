@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { createListing } from '@/lib/listings'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function CreateListing() {
   const router = useRouter()
@@ -119,7 +120,7 @@ export default function CreateListing() {
                 {selectedImages.length > 0 && (
                   <div className="mt-3 grid grid-cols-3 gap-2">
                     {previewUrls.map((url, index) => (
-                      <img
+                      <Image
                         key={index}
                         src={url}
                         alt={`Preview ${index + 1}`}

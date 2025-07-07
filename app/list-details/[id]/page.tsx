@@ -144,7 +144,7 @@ export default function ListingDetails() {
         <div className="max-w-7xl mx-auto p-6">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-900 mb-4">Listing Not Found</h1>
-            <p className="text-gray-600 mb-6">The listing you're looking for doesn't exist or has been removed.</p>
+            <p className="text-gray-600 mb-6">The listing you&apos;re looking for doesn&apos;t exist or has been removed.</p>
             <Link href="/">
               <Button className="bg-blue-600 hover:bg-blue-700">
                 <ArrowLeft className="w-4 h-4 mr-2" />

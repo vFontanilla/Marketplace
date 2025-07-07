@@ -7,32 +7,29 @@ export async function createListing(listingData: {
   description?: string
   category: string
   location?: string
-  contact_email: string
+  seller_email: string
   images?: File[]
 }) {
   try {
-    // Upload images first if any
-    let imageUrls: string[] = []
+    // Upload first image if any (since schema only supports single image_url)
+    let imageUrl: string | null = null
     
     if (listingData.images && listingData.images.length > 0) {
-      const uploadPromises = listingData.images.map(async (file, index) => {
-        const fileExt = file.name.split('.').pop()
-        const fileName = `${Date.now()}-${index}.${fileExt}`
-        
-        const { data, error } = await supabase.storage
-          .from('listing-images')
-          .upload(fileName, file)
-        
-        if (error) throw error
-        
-        const { data: { publicUrl } } = supabase.storage
-          .from('listing-images')
-          .getPublicUrl(fileName)
-        
-        return publicUrl
-      })
+      const file = listingData.images[0] // Take only the first image
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Date.now()}.${fileExt}`
       
-      imageUrls = await Promise.all(uploadPromises)
+      const { data, error } = await supabase.storage
+        .from('listing-images')
+        .upload(fileName, file)
+      
+      if (error) throw error
+      
+      const { data: { publicUrl } } = supabase.storage
+        .from('listing-images')
+        .getPublicUrl(fileName)
+      
+      imageUrl = publicUrl
     }
     
     // Create listing record
@@ -43,9 +40,9 @@ export async function createListing(listingData: {
         price: listingData.price,
         description: listingData.description || null,
         category: listingData.category,
-        location: listingData.location || null,
-        contact_email: listingData.contact_email,
-        image_urls: imageUrls
+        location: listingData.location || 'Palo Alto, CA',
+        seller_email: listingData.seller_email,
+        image_url: imageUrl
       })
       .select()
       .single()

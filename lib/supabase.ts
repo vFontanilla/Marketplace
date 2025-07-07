@@ -12,8 +12,8 @@ export type Listing = {
   description: string | null
   category: string
   location: string | null
-  contact_email: string
-  image_urls: string[]
+  seller_email: string
+  image_url: string | null
   created_at: string
   updated_at: string
 }

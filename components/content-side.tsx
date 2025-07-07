@@ -106,9 +106,9 @@ export function ContentSide() {
               <CardContent className="p-4">
                 {/* Image */}
                 <div className="w-full h-32 bg-gray-200 rounded-md mb-3 overflow-hidden">
-                  {listing.image_urls && listing.image_urls.length > 0 ? (
+                  {listing.image_url ? (
                     <img
-                      src={listing.image_urls[0]}
+                      src={listing.image_url}
                       alt={listing.title}
                       className="w-full h-full object-cover"
                     />

@@ -22,7 +22,7 @@ export default function CreateListing() {
     description: '',
     category: '',
     location: '',
-    contact_email: ''
+    seller_email: ''
   })
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +46,7 @@ export default function CreateListing() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!formData.title || !formData.price || !formData.category || !formData.contact_email) {
+    if (!formData.title || !formData.price || !formData.category || !formData.seller_email) {
       alert('Please fill in all required fields')
       return
     }
@@ -60,7 +60,7 @@ export default function CreateListing() {
         description: formData.description,
         category: formData.category,
         location: formData.location,
-        contact_email: formData.contact_email,
+        seller_email: formData.seller_email,
         images: selectedImages
       })
 
@@ -199,8 +199,8 @@ export default function CreateListing() {
                   type="email" 
                   placeholder="your@email.com" 
                   className="bg-white border-gray-300"
-                  value={formData.contact_email}
-                  onChange={(e) => handleInputChange('contact_email', e.target.value)}
+                  value={formData.seller_email}
+                  onChange={(e) => handleInputChange('seller_email', e.target.value)}
                   required
                 />
               </div>
@@ -266,13 +266,13 @@ export default function CreateListing() {
 
                     <div className="text-sm text-gray-600">
                       <p>Listed just now</p>
-                      <p>in {formData.location || 'Location'}</p>
+                      <p>in {formData.location || 'Palo Alto, CA'}</p>
                     </div>
 
                     <div className="border-t border-gray-200 pt-4">
                       <h4 className="font-medium text-gray-900 mb-2">Seller Information</h4>
                       <p className="text-sm text-gray-600">
-                        {formData.contact_email || 'seller@email.com'}
+                        {formData.seller_email || 'seller@email.com'}
                       </p>
                     </div>
                   </div>
